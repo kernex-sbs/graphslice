@@ -241,10 +241,10 @@ If you use GraphSlice in research:
 
 ## Links
 
-📖 [Documentation](docs/)  
-🐛 [Issue Tracker](https://github.com/kernex-sbs/graphslice/issues)  
-💬 [Discord](https://discord.gg/graphslice)
-📝 [Research Paper](https://arxiv.org/abs/2510.24428)  
+> [Documentation](docs/)  
+> [Issue Tracker](https://github.com/kernex-sbs/graphslice/issues)  
+> [Discord](https://discord.gg/graphslice)  
+> [Research Paper](https://arxiv.org/abs/2510.24428)  
 
 ---
 
