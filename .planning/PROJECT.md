@@ -20,10 +20,13 @@ GraphSlice is a compiler-driven context extraction tool for LLM code editing. It
 - [x] **Phase 3: Verification**: Added Z3 integration (`verifier.rs`) to prune unreachable code paths based on static integer constraints.
 
 ### Active
+- [ ] **Phase 4: Multi-Language Support**: Refactor architecture to support Python and C++.
+  - [ ] Abstract LSP client for multiple servers (`rust-analyzer`, `pyright`, `clangd`).
+  - [ ] Generalize Tree-sitter extractor for multiple grammars.
+  - [ ] Add language detection logic.
 
 ### Out of Scope
 
-- **Multi-language support**: Python, JS, C++ are explicitly deferred to later milestones.
 - **Editor Plugins**: VS Code/Neovim integration is out of scope for MVP.
 - **Repository-wide analysis**: We focus on bounded slices, not whole-program optimization.
 
