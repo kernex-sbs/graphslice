@@ -1,0 +1,70 @@
+use anyhow::Result;
+use graphslice::{Slicer, compression::HierarchicalContext};
+use std::path::PathBuf;
+
+#[tokio::main]
+async fn main() -> Result<()> {
+    let args: Vec<String> = std::env::args().collect();
+    
+    if args.len() < 4 {
+        eprintln!("Usage: graphslice <workspace> <file> <line>:<col> [--max-tokens N]");
+        std::process::exit(1);
+    }
+
+    let workspace = PathBuf::from(&args[1]).canonicalize()?;
+    let target_file = workspace.join(&args[2]);
+    let location = &args[3];
+
+    // Parse optional token limit
+    let max_tokens = if args.len() > 5 && args[4] == "--max-tokens" {
+        args[5].parse().unwrap_or(2000)
+    } else {
+        2000
+    };
+
+    let parts: Vec<&str> = location.split(':').collect();
+    let line: u32 = parts[0].parse()?;
+    let col: u32 = parts[1].parse()?;
+
+    println!("🔍 GraphSlice MVP v0.2");
+    println!("Workspace: {}", workspace.display());
+    println!("Target: {}:{}:{}", target_file.display(), line, col);
+    println!("Max tokens: {}", max_tokens);
+    println!();
+
+    println!("Starting rust-analyzer...");
+    let mut slicer = Slicer::new(workspace).await?;
+
+    println!("Building dependency graph...");
+    let graph = slicer.build_graph(target_file.clone(), line, col).await?;
+
+    println!("Found {} nodes, {} edges", graph.nodes.len(), graph.edges.len());
+
+    // Build hierarchical context
+    println!("Compressing context...");
+    let root = graphslice::graph::NodeId {
+        file: target_file,
+        line,
+        column: col,
+    };
+    
+    let context = HierarchicalContext::build(&graph, &root, max_tokens);
+    let output = context.render();
+
+    println!();
+    println!("─── COMPRESSED CONTEXT ───");
+    println!("{}", output);
+    println!("─── END ───");
+    println!();
+
+    let actual_tokens = output.len() / 4;
+    println!("Actual tokens: {} (target: {})", actual_tokens, max_tokens);
+    println!("Compression: {:.1}x", 
+        (graph.nodes.len() * 100) as f32 / actual_tokens.max(1) as f32
+    );
+
+    std::fs::write("graphslice_context.txt", &output)?;
+    println!("✅ Saved to graphslice_context.txt");
+
+    Ok(())
+}

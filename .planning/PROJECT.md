@@ -10,16 +10,16 @@ GraphSlice is a compiler-driven context extraction tool for LLM code editing. It
 
 ### Validated
 
-(None yet — ship to validate)
+- [x] **LSP Integration**: `lsp_client.rs` successfully communicates with `rust-analyzer` (requests, notifications, content modification retries).
+- [x] **Dependency Graph**: `graph.rs` and `slicer.rs` build a graph with definitions, references, and outgoing calls (Call Hierarchy).
+- [x] **Bounded Closure**: Hierarchical context implemented in `compression.rs`.
+- [x] **CLI Interface**: Basic CLI functional and tested.
+- [x] **Integration Test**: `tests/integration_test.rs` validates the full pipeline.
+- [x] **Robust Code Extraction**: `extractor.rs` uses `tree-sitter` for accurate function/struct extraction.
+- [x] **Phase 2: Fuzzy Slicer**: Implemented LLM-guided slicing for broken code (Engine B) using `tree-sitter` for definitions and LLM for call graph analysis.
+- [x] **Phase 3: Verification**: Added Z3 integration (`verifier.rs`) to prune unreachable code paths based on static integer constraints.
 
 ### Active
-
-- [ ] **LSP Integration**: Communicate with `rust-analyzer` to retrieve symbol information and references.
-- [ ] **Dependency Graph**: Build a directed graph of program dependencies (calls, uses, implements).
-- [ ] **Bounded Closure**: Implement traversal algorithm with configurable depth and fanout limits.
-- [ ] **Slice Extraction**: Extract and format source code for the computed slice.
-- [ ] **CLI Interface**: `graphslice show` for inspecting slices.
-- [ ] **LLM Integration**: `graphslice fix` to send slices to LLMs for editing (Milestone 2).
 
 ### Out of Scope
 
@@ -44,9 +44,9 @@ We are implementing this in **Rust**, targeting **Rust** codebases first, using 
 
 | Decision | Rationale | Outcome |
 |----------|-----------|---------|
-| **LSP Client Architecture** | Simpler to maintain and upgrade than linking against unstable `rust-analyzer` internal crates. | — Pending |
-| **Rust-First** | Strong type system and mature LSP make it the ideal testbed for dependency slicing. | — Pending |
-| **CLI Interface** | Easiest for composability and testing before building complex IDE plugins. | — Pending |
+| **LSP Client Architecture** | Simpler to maintain and upgrade than linking against unstable `rust-analyzer` internal crates. | ✅ Done |
+| **Rust-First** | Strong type system and mature LSP make it the ideal testbed for dependency slicing. | ✅ In Progress |
+| **CLI Interface** | Easiest for composability and testing before building complex IDE plugins. | ✅ Done |
 
 ---
 *Last updated: 2026-02-08 after project initialization*
